@@ -6,8 +6,12 @@
 #include <RC5Constants.h>
 #include <SoftwareSerial.h>
 
-Bounce *Page = new Bounce[NUM_PAGE];
+
+#if PAGES_AND_BUTTONS
+  Bounce *Page = new Bounce[NUM_PAGE];
+#endif
 Bounce *Button = new Bounce[NUM_BUTTON];
+
 
 int pageIndex = 0;
 int buttonIndex = 0;
@@ -17,6 +21,71 @@ MidiMessage midiMessage[NUM_PAGE][NUM_BUTTON];
 SoftwareSerial SerialMidi(MIDI_RX,MIDI_TX);
 
 #define len(arr) sizeof (arr)/sizeof (arr[0])
+
+// Versión sin paginado
+void loadMidiMessagesVer3(){
+  //************************************************//
+  // BOSS RC5 CC
+  // PAGE 0 : RC5
+  // Pag 0 BT 0
+  midiMessage[0][0].Channel = RC5_MIDI_CHANNEL;
+  midiMessage[0][0].CC_PC = MIDI_CH_CTRL_CHANGE;
+  midiMessage[0][0].param = CC_TAP_TEMPO;
+  midiMessage[0][0].value = 127;
+  midiMessage[0][0].sendZero = true;
+  midiMessage[0][0].toggle = false; 
+
+  // Pag 0 BT 1
+  midiMessage[0][1].Channel = RC5_MIDI_CHANNEL;
+  midiMessage[0][1].CC_PC = MIDI_CH_CTRL_CHANGE;
+  midiMessage[0][1].param = CC_RHYTHM_P_S;
+  midiMessage[0][1].value = 127;
+  midiMessage[0][1].sendZero = true;
+  midiMessage[0][1].toggle = false; 
+
+  // Pag 0 BT 1
+  midiMessage[0][2].Channel = RC5_MIDI_CHANNEL;
+  midiMessage[0][2].CC_PC = MIDI_CH_CTRL_CHANGE;
+  midiMessage[0][2].param = CC_VARIATION;
+  midiMessage[0][2].value = 127;
+  midiMessage[0][2].sendZero = false;  
+  midiMessage[0][2].toggle = true;  
+
+  // Pag 0 BT 3
+  midiMessage[0][3].Channel = RC5_MIDI_CHANNEL;
+  midiMessage[0][3].CC_PC = MIDI_CH_CTRL_CHANGE;
+  midiMessage[0][3].param = CC_RHY_PART_2;
+  midiMessage[0][3].value = 0;
+  midiMessage[0][3].sendZero = false;
+  midiMessage[0][3].toggle = true; 
+
+
+  // Pag 0 BT 4
+  midiMessage[0][4].Channel = RC5_MIDI_CHANNEL;
+  midiMessage[0][4].CC_PC = MIDI_CH_CTRL_CHANGE;
+  midiMessage[0][4].param = CC_RHY_PART_1;
+  midiMessage[0][4].value = 0;
+  midiMessage[0][4].sendZero = false;
+  midiMessage[0][4].toggle = true; 
+
+  // Pag 2 BT 2
+  midiMessage[0][5].Channel = NEMESIS_MIDI_CHANNEL;
+  midiMessage[0][5].CC_PC = MIDI_CH_CTRL_CHANGE;
+  midiMessage[0][5].param = CC_PRESET_UP;
+  midiMessage[0][5].value = 127;
+  midiMessage[0][5].sendZero = false;
+  midiMessage[0][5].toggle = false;    
+
+   // Pag 2 BT 3
+  midiMessage[0][6].Channel = NEMESIS_MIDI_CHANNEL;
+  midiMessage[0][6].CC_PC = MIDI_CH_CTRL_CHANGE;
+  midiMessage[0][6].param = CC_PRESET_DOWN;
+  midiMessage[0][6].value = 127;
+  midiMessage[0][6].sendZero = false;
+  midiMessage[0][6].toggle = false; 
+}
+
+
 
 
 void loadMidiMessagesVer2(){
@@ -229,6 +298,7 @@ void loadMidiMessagesDefault(){
 }
 
 void checkPage(){
+#if PAGES_AND_BUTTONS
   for (int i = 0; i < NUM_PAGE; i++)
   {
     Page[i].update();
@@ -239,6 +309,7 @@ void checkPage(){
     }
       
   }
+#endif
 }
 
 void checkButton(){
@@ -386,35 +457,49 @@ void setup() {
 
   Serial.println("Hey Ho Lets Go!");
   
+#if PAGES_AND_BUTTONS  
   for (int i = 0; i < NUM_PAGE; i++) {
     Page[i].attach(PIN_PAGE[i] , INPUT_PULLUP  );       //setup the bounce instance for the current button
     Page[i].interval(25);              // interval in ms
   }
+#endif
+  
+
   for (int i = 0; i < NUM_BUTTON; i++) {
     Button[i].attach( PIN_BUTTON[i] , INPUT_PULLUP  );       //setup the bounce instance for the current button
     Button[i].interval(25);              // interval in ms
   }
+
+#if PAGES_AND_BUTTONS 
   loadMidiMessagesVer2();
   //loadMidiMessagesDefault();
+#else
+  loadMidiMessagesVer3();
+  
+
+#endif
   pinMode(PIN_LED_R, OUTPUT);
   pinMode(PIN_LED_G, OUTPUT);
-  
+#if PAGES_AND_BUTTONS  
   // Ajusto la memoria del RC5 a la primera posición
   sendMIDI(midiMessage[2][0].CC_PC| char(midiMessage[2][0].Channel),
              midiMessage[2][0].param,
              midiMessage[2][0].value );
-
+#endif
   Serial.println(F("Setup Finished"));
   
 }
 
 void loop() {
+#if PAGES_AND_BUTTONS 
   checkPage();
   parpadearPage(PIN_LED_R,250);
+#endif
+  
   checkButton();
   sendMessage();
   parpadearSwitch(PIN_LED_G,100);
   
 
-  delay(10);
+  //delay(10);
 }
