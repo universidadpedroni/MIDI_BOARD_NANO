@@ -13,3 +13,4 @@ const int PIN_LED_G = 4;
 const int PIN_LED_R = 5;
 
 bool parpadearG = false;           // variable para determinar si se debe hacer parpadear el led o no.
+bool parpadearR = false;

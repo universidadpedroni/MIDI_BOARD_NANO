@@ -46,15 +46,15 @@ void sendMIDI(int switchIndex)
   } 
   if (mySw[switchIndex].toggle) {
     mySw[switchIndex].value == 127? mySw[switchIndex].value = 0 : mySw[switchIndex].value = 127;
-    Serial.print("Val: ");
-    Serial.println(mySw[switchIndex].value);
+    //Serial.print("Val: ");
+    //Serial.println(mySw[switchIndex].value);
   }
   
 }
 
 
 
-void parpadearSwitch(int pin, unsigned long interval)
+void parpadearGreen(int pin, unsigned long interval)
 {
   static int cuentaParpadeo = 0;
   static unsigned long previousMillis = 0;        // will store last time LED was updated
@@ -73,6 +73,32 @@ void parpadearSwitch(int pin, unsigned long interval)
     if (cuentaParpadeo == 4)
     {
       parpadearG = false;
+      cuentaParpadeo = 0;
+    }
+
+  }
+	
+}
+
+void parpadearRed(int pin, unsigned long interval)
+{
+  static int cuentaParpadeo = 0;
+  static unsigned long previousMillis = 0;        // will store last time LED was updated
+	//const long interval = 1000;           // interval at which to blink (milliseconds)
+	unsigned long currentMillis = millis();
+	static bool estadoPin=false;
+	if (parpadearR)
+  {
+    if(currentMillis - previousMillis > interval) 
+	  {
+		  previousMillis = currentMillis;
+		  estadoPin==false? estadoPin=true : estadoPin=false;
+		  digitalWrite(pin, estadoPin);
+      cuentaParpadeo += 1;
+	  }
+    if (cuentaParpadeo == 4)
+    {
+      parpadearR = false;
       cuentaParpadeo = 0;
     }
 
@@ -101,24 +127,28 @@ void mySwInit(){
 
 void setup() {
   delay(1000);
-  Serial.begin(BAUDRATE);
+  //Serial.begin(BAUDRATE);
   SerialMidi.begin(BAUDRATE_MIDI);
 
-  Serial.println("Hey Ho Lets Go!");
+  //Serial.println("Hey Ho Lets Go!");
   
   pinMode(PIN_LED_R, OUTPUT);
   pinMode(PIN_LED_G, OUTPUT);
   mySwInit();
-  Serial.println(F("Setup Finished"));
-  Serial.println(__TIME__);
+  //Serial.println(F("Setup Finished"));
+  //Serial.println(__TIME__);
 }
 
 void loop() {
-  parpadearSwitch(PIN_LED_G,100);
+  parpadearGreen(PIN_LED_G,250);
+  parpadearRed(PIN_LED_R, 250);
   for(int i = 0; i < NUM_SWITCHES; i++){
     mySw[i].update();
     if(mySw[i].sendMidiNow){
-      Serial.print("Pulsador: "); Serial.print(i); Serial.print(": ");
+      mySw[i].midiChannel == RC5_MIDI_CHANNEL? parpadearR = true: parpadearG = true;
+      //Serial.print(parpadearR);
+      //Serial.print("   ");
+      //Serial.println(parpadearG);
       sendMIDI(i);
       mySw[i].sendMidiNow = false;
            
