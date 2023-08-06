@@ -68,21 +68,22 @@ void loadMidiMessagesVer3(){
   midiMessage[0][4].sendZero = false;
   midiMessage[0][4].toggle = true; 
 
-  // Pag 2 BT 2
-  midiMessage[0][5].Channel = NEMESIS_MIDI_CHANNEL;
-  midiMessage[0][5].CC_PC = MIDI_CH_CTRL_CHANGE;
-  midiMessage[0][5].param = CC_PRESET_UP;
-  midiMessage[0][5].value = 127;
+  // Pag 2 BT 0
+  midiMessage[0][5].Channel = RC5_MIDI_CHANNEL;
+  midiMessage[0][5].CC_PC = MIDI_CH_PRGM_CAHNGE;
+  midiMessage[0][5].param = MIDI_CH_PRGM_CAHNGE;
+  midiMessage[0][5].value = progNumber;
   midiMessage[0][5].sendZero = false;
-  midiMessage[0][5].toggle = false;    
+  midiMessage[0][5].toggle = false; 
 
-   // Pag 2 BT 3
-  midiMessage[0][6].Channel = NEMESIS_MIDI_CHANNEL;
-  midiMessage[0][6].CC_PC = MIDI_CH_CTRL_CHANGE;
-  midiMessage[0][6].param = CC_PRESET_DOWN;
-  midiMessage[0][6].value = 127;
-  midiMessage[0][6].sendZero = false;
-  midiMessage[0][6].toggle = false; 
+   // Pag 2 BT 1
+  midiMessage[0][6].Channel = RC5_MIDI_CHANNEL;
+  midiMessage[0][6].CC_PC = MIDI_CH_PRGM_CAHNGE;
+  midiMessage[0][6].param = MIDI_CH_PRGM_CAHNGE;
+  midiMessage[0][6].value = progNumber;
+  midiMessage[0][6].sendZero = false;  
+  midiMessage[0][6].toggle = false;  
+ 
 }
 
 
@@ -362,6 +363,7 @@ void sendMessage(){
   if (lastbuttonIndex != buttonIndex){
     parpadearG = true;
     // Verifica si es el pulsador de PC del RC5
+    #if PAGES_AND_BUTTONS
     if(pageIndex == 2 && buttonIndex == 0){
       progNumber < 98? progNumber++ : progNumber = 0;
       midiMessage[2][0].value = progNumber;
@@ -370,6 +372,16 @@ void sendMessage(){
       progNumber > 0? progNumber-- : progNumber = 98;
       midiMessage[2][1].value = progNumber;
     } 
+    #else
+    if(pageIndex == 0 && buttonIndex == 5){
+      progNumber < 98? progNumber++ : progNumber = 0;
+      midiMessage[0][5].value = progNumber;
+    }
+    if(pageIndex == 0 && buttonIndex == 6){
+      progNumber > 0? progNumber-- : progNumber = 98;
+      midiMessage[0][6].value = progNumber;
+    }
+    #endif
         // Enviar Mensaje
     sendMIDI(midiMessage[pageIndex][buttonIndex].CC_PC| char(midiMessage[pageIndex][buttonIndex].Channel),
              midiMessage[pageIndex][buttonIndex].param,
