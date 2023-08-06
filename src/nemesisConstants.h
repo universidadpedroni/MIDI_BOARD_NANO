@@ -6,7 +6,8 @@ const int NEMESIS_MIDI_CHANNEL = MIDI_CHANNEL_2;
 
 const int CC_TEMPO_DIVISION = 42;
 const int TEMPO_DIVISION[] = { 6,   // Quarter notes
-                               7};   // Dotted 8ths
+                               7,   // Dotted 8ths
+                               8};  // Swinged 8ths
 
 const int CC_OCTAVE_SHIFT_CONTROL = 50;
 const int OCTAVES[] = { 0,          // OCtave down

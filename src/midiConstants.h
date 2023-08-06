@@ -1,3 +1,5 @@
+#ifndef MIDICONSTANTS_H
+#define MIDICONSTANTS_H
 /* Channel messages.
    4 most significant bytes is the type, 4 least significant is the channel.
    Example: 0x83 is note off channel 4*/
@@ -5,7 +7,7 @@
 #define MIDI_CH_NOTE_ON                   0x90
 #define MIDI_CH_POLY_AFTER_TOUCH          0xA0
 #define MIDI_CH_CTRL_CHANGE               0xB0
-#define MIDI_CH_PRGM_CAHNGE               0xC0
+#define MIDI_CH_PRGM_CHANGE               0xC0
 #define MIDI_CH_CHANNEL_AFTER_TOUCH       0xD0
 #define MIDI_CH_PITCH_WHEEL               0xE0
 
@@ -30,3 +32,4 @@
 #define MIDI_CHANNEL_15 0x0E
 #define MIDI_CHANNEL_16 0x0F
 
+#endif
