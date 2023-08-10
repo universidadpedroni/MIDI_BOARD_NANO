@@ -6,7 +6,7 @@ const long BAUDRATE_MIDI = 31250;
 const int MIDI_TX = 3;
 const int MIDI_RX = A0;
 
-const int PIN_SWITCH[] = {9, 8, 10, 12, 7, 6, 11};
+const int PIN_SWITCH[] = {8, 9, 10, 12, 7, 6, 11};
 const int NUM_SWITCHES = sizeof(PIN_SWITCH) / sizeof(int);
 
 const int PIN_LED_G = 4;
