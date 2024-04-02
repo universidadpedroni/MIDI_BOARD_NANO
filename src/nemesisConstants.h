@@ -14,6 +14,6 @@ const int OCTAVES[] = { 0,          // OCtave down
                         63,         // Unison
                         127};       // Octave Up
 
-const int CC_PRESET_UP = 82;
-const int CC_PRESET_DOWN = 80;
+const int CC_PRESET_UP = 80;
+const int CC_PRESET_DOWN = 82;
 

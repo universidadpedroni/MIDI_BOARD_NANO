@@ -21,4 +21,4 @@ const int CC_MEMORY_DEC = 82;
 //const int CC_TRK_UNDO = 83;
 
 const int CC_RC5[] = {80, 81, 82, 83, 84, 85, 86, 87};
-int progNumber = 0;
+//int RC5progNumber = 0;
