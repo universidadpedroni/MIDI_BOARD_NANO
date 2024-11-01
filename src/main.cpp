@@ -36,12 +36,12 @@ void sendMIDI(int switchIndex)
     RC5loopNumber > 0? RC5loopNumber-- : RC5loopNumber = 98;
     SerialMidi.write(RC5loopNumber);
   } 
-  else if(switchIndex == 5){  // Los cambios de Preset del ACS1 también son un caso especial
-    ACS1PresetNumber < 2? ACS1PresetNumber ++: ACS1PresetNumber = 0;
-    SerialMidi.write(ACS1PresetNumber);
-    Serial.print(mySw[switchIndex].midiChannel); Serial.print(","); Serial.println(ACS1PresetNumber);
+  //else if(switchIndex == 5){  // Los cambios de Preset del ACS1 también son un caso especial
+  //  ACS1PresetNumber < 2? ACS1PresetNumber ++: ACS1PresetNumber = 0;
+  //  SerialMidi.write(ACS1PresetNumber);
+  //  Serial.print(mySw[switchIndex].midiChannel); Serial.print(","); Serial.println(ACS1PresetNumber);
 
-  } 
+  //} 
   else
   {
     SerialMidi.write(mySw[switchIndex].value);
@@ -57,8 +57,6 @@ void sendMIDI(int switchIndex)
     Serial.print("Val: "); Serial.println(mySw[switchIndex].value);
   }
 }
-
-
 
 void parpadearGreen(int pin, unsigned long interval)
 {
@@ -114,24 +112,31 @@ void parpadearRed(int pin, unsigned long interval)
 
 // Inicialización de los switches MIDI
 void mySwInit(){
-  // Switch 0: RC5, RHYTHM PLAY_STOP
-  mySw[2].init(PIN_SWITCH[0], RC5_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_RHYTHM_P_S, 127, true, false);
-  // Switch 0: RC5, LOOP DOWN
-  mySw[0].init(PIN_SWITCH[2], RC5_MIDI_CHANNEL, MIDI_CH_PRGM_CHANGE, MIDI_CH_PRGM_CHANGE, RC5loopNumber);
+  // Switch 0: RC5, Loop P/S
+  mySw[2].init(PIN_SWITCH[0], RC5_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_TRK_PLY_STP, 127, true, false);
   // Switch 1: RC5, LOOP UP
   mySw[1].init(PIN_SWITCH[1], RC5_MIDI_CHANNEL, MIDI_CH_PRGM_CHANGE, MIDI_CH_PRGM_CHANGE, RC5loopNumber);
+  // Switch 2: RC5, LOOP DOWN
+  mySw[0].init(PIN_SWITCH[2], RC5_MIDI_CHANNEL, MIDI_CH_PRGM_CHANGE, MIDI_CH_PRGM_CHANGE, RC5loopNumber);
+  // Switch 3: RC5, Rhythm P/S
+  mySw[3].init(PIN_SWITCH[3], RC5_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_RHYTHM_P_S, 127, true, false);
+  // Switch 4: RC5, Variation
+  mySw[4].init(PIN_SWITCH[4], RC5_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_VARIATION, 127, false, true);
+  // Switch 5: RC5 Rhy Part 2 
+  mySw[5].init(PIN_SWITCH[5], RC5_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_RHY_PART_2, 0, false, true);
+  // Switch 6: RC5 Rhy Part 3 
+  mySw[6].init(PIN_SWITCH[6], RC5_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_TAP_TEMPO, 127, true, false);
   
-
   // Switch 3: NEMESIS, PROG DOWN ;
-  mySw[4].init(PIN_SWITCH[4], NEMESIS_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_PRESET_UP, 127);
+  //mySw[4].init(PIN_SWITCH[4], NEMESIS_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_PRESET_UP, 127);
   // Switch 2: NEMESIS, PROG UP;
-  mySw[3].init(PIN_SWITCH[3], NEMESIS_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_PRESET_DOWN, 127);
+  //mySw[3].init(PIN_SWITCH[3], NEMESIS_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_PRESET_DOWN, 127);
   
   
   // Switch 6: ACS1, PRESET
-  mySw[5].init(PIN_SWITCH[5], ACS1_MIDI_CHANNEL, MIDI_CH_PRGM_CHANGE, 0xFF, 127, false, false);
+  //mySw[5].init(PIN_SWITCH[5], ACS1_MIDI_CHANNEL, MIDI_CH_PRGM_CHANGE, 0xFF, 127, false, false);
   // Switch 7: ACS1, BOOST
-  mySw[6].init(PIN_SWITCH[6], ACS1_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_BOOST, 127, false, true);
+  //mySw[6].init(PIN_SWITCH[6], ACS1_MIDI_CHANNEL, MIDI_CH_CTRL_CHANGE, CC_BOOST, 127, false, true);
 
 }
 
